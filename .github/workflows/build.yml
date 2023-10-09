@@ -33,6 +33,11 @@ jobs:
     - name: Install PM2
       run: npm install pm2 -g
 
+    - name: Start React beck with PM2
+      run: pm2 start npm --name "app-name" -- start -- --port 3000
+      env:
+        PM2_PUBLIC: true
+
     - name: Deploy to Server
       uses: easingthemes/ssh-deploy@main
       with:
@@ -42,14 +47,3 @@ jobs:
         REMOTE_USER: ${{ secrets.USERNAME }}
         TARGET: ${{ secrets.REMOTE_TARGET }}
         EXCLUDE: "/node_modules/"
-
-    - name: PM2 restart
-      run: |
-        touch key.pem
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
-        chmod 400 key.pem
-        ssh -i key.pem ${{secrets.USERNAME}}@${{secrets.HOST_DNS}} -p 22 '
-        pm2 kill
-        cd /home/ec2-user/online-chat/
-        pm2 start npm --name "online-chat" -- start -- --port 3000
-        '
