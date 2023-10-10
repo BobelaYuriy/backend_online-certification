@@ -6,8 +6,14 @@ const logger = require('morgan');
 const mongoose = require('mongoose')
 //підключення роутів
 const indexRouter = require('./routes/index');
-const coursesRouter = require('./routes/courses');
-
+const allCoursesRouter = require('./routes/allCourses');
+// const deignCoursesRouter= require('./routes/designCourses');
+// const developmentCoursesRouter= require('./routes/developmentCourses');
+// const marketingCoursesRouter= require('./routes/marketingCourses');
+// const personalDevelopmentCoursesRouter= require('./routes/personalDevelopmentCourses');
+// const businessCoursesRouter= require('./routes/businessCourses');
+// const photographyCoursesRouter= require('./routes/photographyCourses');
+// const musicCoursesRouter= require('./routes/musicCourses');
 
 const app = express();
 
@@ -19,6 +25,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
 //дозволи для ресурів через Cors 
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
@@ -29,7 +36,7 @@ app.use(function(req, res, next) {
 
 //роути
 app.use('/', indexRouter);
-app.use('/api', coursesRouter);
+app.use('/api', allCoursesRouter);
 
 //підключення бази даних
 mongoose.connect('mongodb+srv://BobelaYuriy:xqCsBvmgVTICtvrT@databaseonlinecertifica.qk0elja.mongodb.net/OnlineCertification?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
