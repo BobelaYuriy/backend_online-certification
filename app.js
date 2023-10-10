@@ -6,7 +6,6 @@ const logger = require('morgan');
 const mongoose = require('mongoose')
 //підключення роутів
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
 const coursesRouter = require('./routes/courses');
 
 
@@ -23,8 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //роути
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/', coursesRouter);
+app.use('/api', coursesRouter);
 
 //підключення бази даних
 mongoose.connect('mongodb+srv://BobelaYuriy:xqCsBvmgVTICtvrT@databaseonlinecertifica.qk0elja.mongodb.net/OnlineCertification?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
