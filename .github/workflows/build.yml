@@ -24,6 +24,16 @@ jobs:
         echo "${{ secrets.ENV }}" > .env
         cat .env
 
+    - name: Deploy to Server
+      uses: easingthemes/ssh-deploy@main
+      with:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        ARGS: "-rlgoDzvc -i --delete"
+        REMOTE_HOST: ${{ secrets.HOST_DNS }}
+        REMOTE_USER: ${{ secrets.USERNAME }}
+        TARGET: ${{ secrets.REMOTE_TARGET }}
+        EXCLUDE: "/node_modules/"
+
     - name: PM2 restart
       run: |
         touch key.pem
