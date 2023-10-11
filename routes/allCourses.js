@@ -36,7 +36,7 @@ router.get('/courses',verifyToken, async (req, res) => {
             result.push(cardsUsers.slice(i, i + limit));
         }
         
-        res.json(result);
+        res.json(cardsUsers);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
