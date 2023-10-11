@@ -27,16 +27,15 @@ function verifyToken(req, res, next) {
 
 router.get('/courses',verifyToken, async (req, res) => {
     try {
-        const cardsUsers = await CardsUsers.find();
-    
-        const limit = parseInt(req.query.limit);
+        const page = parseInt(req.query.page)||1;
+        const limit = parseInt(req.query.limit)||5;
         
-        let result = [];
-        for (let i = 0; i < cardsUsers.length; i += limit) {
-            result.push(cardsUsers.slice(i, i + limit));
-        }
-        
-        res.json(cardsUsers);
+
+        const courses = await CardsUsers.find()
+        .skip((page-1)*limit)
+        .limit(limit);
+        res.json(courses);
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
