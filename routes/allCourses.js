@@ -1,6 +1,9 @@
 const express = require('express');
-const router = express.Router();
+const db = require('../db');
 const CardsUsers = require('../models/cards')
+
+const router = express.Router();
+const SECRET = process.env.JWT_SECRET;
 
 router.get('/courses', async (req, res) => {
     try {

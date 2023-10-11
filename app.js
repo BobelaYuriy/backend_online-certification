@@ -4,9 +4,10 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose')
+const db = require('./db');
 //підключення роутів
-const indexRouter = require('./routes/index');
-const allCoursesRouter = require('./routes/allCourses');
+const allCoursesRouter = require('./routes/allCourses')
+const usersRouter = require('./routes/users')
 // const deignCoursesRouter= require('./routes/designCourses');
 // const developmentCoursesRouter= require('./routes/developmentCourses');
 // const marketingCoursesRouter= require('./routes/marketingCourses');
@@ -35,16 +36,16 @@ app.use(function(req, res, next) {
 });
 
 //роути
-app.use('/', indexRouter);
 app.use('/api', allCoursesRouter);
+app.use('/api', usersRouter);
+
+app.use((req, res, next) => {
+  req.db = db; 
+  next();
+});
+
 
 //підключення бази даних
-mongoose.connect('mongodb+srv://BobelaYuriy:xqCsBvmgVTICtvrT@databaseonlinecertifica.qk0elja.mongodb.net/OnlineCertification?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('Підключено до MongoDB'))
-    .catch(err => console.error('Помилка підключення до MongoDB:', err));
-
-
-
 
 //перехоплення помилок
 app.use(function (req, res, next) {
