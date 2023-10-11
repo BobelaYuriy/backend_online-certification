@@ -17,7 +17,13 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '18'
-        
+      
+    - name: Create env file
+      run: |
+        touch .env
+        echo "${{ secrets.ENV }}" > .env
+        cat .env
+
     - name: Install npm dependencies
       run: npm install
 
