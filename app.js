@@ -4,17 +4,12 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose')
+const cors = require('cors');
 const db = require('./db');
+
 //підключення роутів
 const allCoursesRouter = require('./routes/allCourses')
 const usersRouter = require('./routes/users')
-// const deignCoursesRouter= require('./routes/designCourses');
-// const developmentCoursesRouter= require('./routes/developmentCourses');
-// const marketingCoursesRouter= require('./routes/marketingCourses');
-// const personalDevelopmentCoursesRouter= require('./routes/personalDevelopmentCourses');
-// const businessCoursesRouter= require('./routes/businessCourses');
-// const photographyCoursesRouter= require('./routes/photographyCourses');
-// const musicCoursesRouter= require('./routes/musicCourses');
 
 const app = express();
 
@@ -26,14 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-//дозволи для ресурів через Cors 
-app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-});
+app.use(cors());
 
 //роути
 app.use('/api', allCoursesRouter);
@@ -43,9 +31,6 @@ app.use((req, res, next) => {
   req.db = db; 
   next();
 });
-
-
-//підключення бази даних
 
 //перехоплення помилок
 app.use(function (req, res, next) {
