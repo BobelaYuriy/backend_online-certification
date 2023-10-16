@@ -1,12 +1,10 @@
-const express = require('express')
-const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user')
 require("dotenv").config();
 const SECRET = process.env.JWT_SECRET;
 
-router.post('/signup', async (req, res) => {
+const signup = async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
@@ -30,9 +28,9 @@ router.post('/signup', async (req, res) => {
         console.error('Signup error:', err);
         res.status(500).json({ error: 'Server error' });
     }
-});
+};
 
-router.post('/signin', async (req, res) => {
+const signin = async (req, res) => {
     try {
         const { username, password } = req.body;
 
@@ -55,6 +53,10 @@ router.post('/signin', async (req, res) => {
         console.error('Auth error:', err);
         res.status(500).json({ error: 'Server error' });
     }
-});
+  };
+  
 
-module.exports = router;
+module.exports = {
+  signup,
+  signin
+};

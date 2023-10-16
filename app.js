@@ -3,13 +3,11 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const mongoose = require('mongoose')
 const cors = require('cors');
 const db = require('./db');
 
 //підключення роутів
-const allCoursesRouter = require('./routes/allCourses')
-const usersRouter = require('./routes/users')
+const routes = require('./routes/index')
 
 const app = express();
 
@@ -24,8 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 //роути
-app.use('/api', allCoursesRouter);
-app.use('/api', usersRouter);
+app.use('/api', routes);
 
 app.use((req, res, next) => {
   req.db = db; 
