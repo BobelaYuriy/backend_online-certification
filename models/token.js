@@ -5,5 +5,5 @@ user:{type:mongoose.Schema.ObjectId, ref:'user'},
 refreshToken:{type:String, required:true},
 })
 
-const token = mongoose.model('users', usersSchema)
+const token = mongoose.model('users', TokenSchema)
 module.exports = token;
