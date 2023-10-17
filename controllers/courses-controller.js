@@ -1,6 +1,6 @@
 const CardsUsers = require('../models/cards')
 const verifyToken = require('./token-controller')
-
+const mongoose = require('mongoose')
 const allcourses = async (req, res) => {
     try {
      
@@ -30,7 +30,29 @@ const allcourses = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 }
+const idcourse = async (req, res) => {
+    try {
+
+        const isValidObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
+
+        if (!isValidObjectId) {
+            return res.status(400).json({ error: 'Невірний формат ідентифікатора' });
+        }
+        
+        const course = await CardsUsers.findById(req.params.id);
+        
+        if (!course) {
+            return res.status(404).json({ message: 'Курс не знайдено' });
+        }
+
+        return res.status(200).json(course)
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
 
 module.exports = {
-    allcourses
+    allcourses,
+    idcourse
   };
