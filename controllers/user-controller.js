@@ -47,7 +47,7 @@ const signup = async (req, res) => {
         res.status(201).json({ userData });
     } catch (err) {
         console.error('Signup error:', err);
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ error: err });
     }
 };
 
@@ -82,7 +82,7 @@ const signin = async (req, res) => {
 
     } catch (err) {
         console.error('Auth error:', err);
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ error: err });
     }
 };
 
