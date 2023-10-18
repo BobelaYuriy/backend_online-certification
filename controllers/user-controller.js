@@ -4,7 +4,6 @@ const UserDto = require('../dtos/user-dto');
 const tokenService = require('../services/token-service');
 const {validationResult} = require('express-validator');
 const ApiError = require('../exceptions/api-error');
-
 require("dotenv").config();
 
 const signup = async (req, res,next) => {

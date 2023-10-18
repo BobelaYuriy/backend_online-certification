@@ -6,6 +6,7 @@ const logger = require('morgan');
 const cors = require('cors');
 const db = require('./db');
 const errorMiddleware = require('./middlewares/error-middleware');
+require('dotenv').config()
 //підключення роутів
 const routes = require('./routes/index')
 
@@ -19,7 +20,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
+app.use(cors({
+  credentials: true,
+  origin: process.env.CLIENT_URL
+}));
 
 //роути
 app.use('/api', routes);
