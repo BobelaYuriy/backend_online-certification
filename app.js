@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 const db = require('./db');
-
+const errorMiddleware = require('./middlewares/error-middleware');
 //підключення роутів
 const routes = require('./routes/index')
 
@@ -23,6 +23,7 @@ app.use(cors());
 
 //роути
 app.use('/api', routes);
+app.use(errorMiddleware);
 
 app.use((req, res, next) => {
   req.db = db; 

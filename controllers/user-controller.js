@@ -2,12 +2,18 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user')
 const UserDto = require('../dtos/user-dto');
 const tokenService = require('../services/token-service');
+const {validationResult} = require('express-validator');
+const ApiError = require('../exceptions/api-error');
+
 require("dotenv").config();
 
-const signup = async (req, res) => {
+const signup = async (req, res,next) => {
     try {
+        const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return next(ApiError.BadRequest('Помилка при валідації', errors.array()))
+            }
         const { username, email, password } = req.body;
-
         // Перевірка наявності коректної email адреси
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -46,12 +52,11 @@ const signup = async (req, res) => {
         
         res.status(201).json({ userData });
     } catch (err) {
-        console.error('Signup error:', err);
-        res.status(500).json({ error: err });
+        next(err)
     }
 };
 
-const signin = async (req, res) => {
+const signin = async (req, res, next) => {
     try {
         const { username, password } = req.body;
 
@@ -79,14 +84,13 @@ const signin = async (req, res) => {
 
         res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
         res.status(200).json(userData);
-
+        
     } catch (err) {
-        console.error('Auth error:', err);
-        res.status(500).json({ error: err });
+        next(err)
     }
 };
 
-  const signout = async (req, res) => {
+  const signout = async (req, res, next) => {
     try {
         const { refreshToken } = req.cookies;
 
@@ -103,12 +107,11 @@ const signin = async (req, res) => {
         res.clearCookie('refreshToken');
         return res.status(200).json({ message: 'Token removed successfully' });
     } catch (err) {
-        console.error('Auth error:', err);
-        return res.status(500).json({ error: 'Server error' });
+        next(err)
     }
 };
 
-  const refresh = async (req, res) => {
+  const refresh = async (req, res, next) => {
     try {
         const { refreshToken } = req.cookies;
         const userId = tokenService.validateRefreshToken(refreshToken);
@@ -138,8 +141,7 @@ const signin = async (req, res) => {
 
         return res.json(userData);
     } catch (err) {
-        console.error('refresh err:', err);
-        return res.status(500).json({ error: 'Server error' });
+        next(err)
     }
 };
   
