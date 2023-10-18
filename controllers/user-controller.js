@@ -1,11 +1,10 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user')
-const jwt = require('jsonwebtoken');
 const UserDto = require('../dtos/user-dto');
 const tokenService = require('../services/token-service');
 const {validationResult} = require('express-validator');
 const ApiError = require('../exceptions/api-error');
-const SECRET = process.env.JWT_ACCESS_SECRET;
+
 require("dotenv").config();
 
 const signup = async (req, res,next) => {
@@ -57,9 +56,13 @@ const signup = async (req, res,next) => {
     }
 };
 
-const signin = async (req, res) => {
+const signin = async (req, res, next) => {
     try {
         const { username, password } = req.body;
+
+        if (!username || !password) {
+            return res.status(400).json({ error: 'Username and password are required' });
+        }
 
         const user = await User.findOne({ username });
 
@@ -73,14 +76,19 @@ const signin = async (req, res) => {
             return res.status(401).json({ error: 'Wrong username or password' });
         }
 
-        const token = jwt.sign({ userId: user._id },SECRET, { expiresIn: '1h' });
+        const userDto = new UserDto(user);
+        const tokens = tokenService.generateTokens({...userDto});
 
-        res.status(200).json({ token });
+        await tokenService.saveToken(userDto.id, tokens.refreshToken);
+        const userData = {...tokens, user: userDto};
+
+        res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+        res.status(200).json(userData);
+        
     } catch (err) {
-        console.error('Auth error:', err);
-        res.status(500).json({ error: 'Server error' });
+        next(err)
     }
-  };
+};
 
   const signout = async (req, res, next) => {
     try {
