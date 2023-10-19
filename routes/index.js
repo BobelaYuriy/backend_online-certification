@@ -6,12 +6,12 @@ const {verifyToken} = require('../controllers/token-controller')
 
 router.post('/signup', signup);
 router.post('/signin', signin);
-router.post('/signout', signout);
+//router.post('/signout', signout);
 
-router.get('/refresh', refresh);
+//router.get('/refresh', refresh);
 router.get('/courses', allcourses);
-router.get('/courses/id/',verifyToken, idcourse);
-router.get('/courses/filter/', filtercourse);
-router.get('/courses/search/', searchcourse);
+//router.get('/courses/id/',verifyToken, idcourse);
+//router.get('/courses/filter/', filtercourse);
+//router.get('/courses/search/', searchcourse);
 
 module.exports = router
