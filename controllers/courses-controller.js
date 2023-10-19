@@ -86,6 +86,5 @@ const searchcourse = async (req, res) => {
 module.exports = {
     allcourses,
     idcourse,
-    filtercourse,
     searchcourse
   };
