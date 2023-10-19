@@ -16,6 +16,7 @@
     "http-server": "^14.1.1",
     "jade": "^0.29.0",
     "jsonwebtoken": "^9.0.2",
+    "list": "^2.0.19",
     "mongodb": "^6.1.0",
     "mongodb-connection-string-url": "^2.6.0",
     "mongoose": "^7.6.1",
