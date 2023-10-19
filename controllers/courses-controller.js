@@ -6,14 +6,15 @@ const allcourses = async (req, res) => {
      
         const page = parseInt(req.query.page);
         const limit = parseInt(req.query.limit)||5;
+        const category = req.query.category;
         let accessNextPage = true
         let accessPreviousPage = true
-
-        const courses = await CardsUsers.find()
+        
+        const courses = await CardsUsers.find(category?{category}:{})
         .skip((page-1)*limit)
         .limit(limit);
         
-        const nextpage = await CardsUsers.find()
+        const nextpage = await CardsUsers.find(category?{category}:{})
         .skip((page)*limit)
         .limit(limit)
 
@@ -50,35 +51,7 @@ const idcourse = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 }
-const filtercourse = async (req, res) => {
-    try {
-        const page = parseInt(req.query.page);
-        const limit = parseInt(req.query.limit) || 5;
-        const category = req.query.category; // Отримуємо категорію з параметрів
 
-        let accessNextPage = true;
-        let accessPreviousPage = true;
-
-        const courses = await CardsUsers.find({ category }) // Фільтрація за категорією
-            .skip((page - 1) * limit)
-            .limit(limit);
-
-        const nextpage = await CardsUsers.find({ category }) // Фільтрація за категорією
-            .skip(page * limit)
-            .limit(limit);
-
-        if (nextpage.length === 0) {
-            accessNextPage = false;
-        }
-        if (page <= 1) {
-            accessPreviousPage = false;
-        }
-
-        res.json({ accessNextPage, accessPreviousPage, courses});
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-}
 const searchcourse = async (req, res) => {
     try {
         const page = parseInt(req.query.page);
