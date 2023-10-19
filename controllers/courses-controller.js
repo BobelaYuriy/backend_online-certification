@@ -1,5 +1,5 @@
 const CardsUsers = require('../models/cards')
-const verifyToken = require('./token-controller')
+
 const mongoose = require('mongoose')
 const allcourses = async (req, res) => {
     try {
