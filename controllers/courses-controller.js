@@ -33,13 +33,13 @@ const allcourses = async (req, res) => {
 }
 const idcourse = async (req, res) => {
     try {
-        const isValidObjectId = mongoose.Types.ObjectId.isValid(req.query.id);
+        const isValidObjectId = mongoose.Types.ObjectId.isValid(req.params.id);
 
         if (!isValidObjectId) {
             return res.status(400).json({ error: 'Невірний формат ідентифікатора' });
         }
         
-        const course = await CardsUsers.findById(req.query.id);
+        const course = await CardsUsers.findById(req.params.id);
         
         if (!course) {
             return res.status(404).json({ message: 'Курс не знайдено' });
