@@ -19,7 +19,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
+
+// Додано middleware для обробки CORS
+app.use(cors({
+  credentials: true,
+  origin: "http://ec2-54-211-16-251.compute-1.amazonaws.com"
+}));
 
 //роути
 app.use('/api', routes);
