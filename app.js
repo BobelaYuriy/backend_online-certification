@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Додано middleware для обробки CORS
 app.use(cors({
   credentials: true,
-  origin: "http://ec2-54-211-16-251.compute-1.amazonaws.com"
+  origin: "*"
 }));
 
 //роути
