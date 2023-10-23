@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Додано middleware для обробки CORS
 app.use(cors({
   credentials: true,
-  origin: "*"
+  origin: "http://localhost:3000"
 }));
 
 //роути
