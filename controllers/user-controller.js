@@ -79,7 +79,6 @@ const signin = async (req, res) => {
 
         res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
         res.status(200).json(userData);
-
     } catch (err) {
         console.error('Auth error:', err);
         res.status(500).json({ error: 'Server error' });
@@ -88,7 +87,7 @@ const signin = async (req, res) => {
 
   const signout = async (req, res) => {
     try {
-        const { refreshToken } = req.cookies;
+        const {refreshToken} = req.cookies;
 
         if (!refreshToken) {
             return res.status(400).json({ error: 'Bad Request: Refresh token not provided' });
@@ -111,6 +110,9 @@ const signin = async (req, res) => {
   const refresh = async (req, res) => {
     try {
         const { refreshToken } = req.cookies;
+        if (!refreshToken) {    
+            return res.status(401).json({ error: 'Token is not found' });
+        }
         const userId = tokenService.validateRefreshToken(refreshToken);
         const tokenFromDb = await tokenService.findToken(refreshToken);
 
@@ -119,11 +121,9 @@ const signin = async (req, res) => {
         }
 
         const user = await User.findById(userId.id);
-
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
-
         const userDto = new UserDto(user);
         const tokens = tokenService.generateTokens({ ...userDto });
 
@@ -142,7 +142,6 @@ const signin = async (req, res) => {
         return res.status(500).json({ error: 'Server error' });
     }
 };
-  
 
 module.exports = {
   signup,
