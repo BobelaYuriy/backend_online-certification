@@ -52,6 +52,7 @@ const signup = async (req, res) => {
 };
 
 const signin = async (req, res) => {
+    console.log(req.headers);
     try {
         const { username, password } = req.body;
 
@@ -86,6 +87,7 @@ const signin = async (req, res) => {
 };
 
   const signout = async (req, res) => {
+    console.log(req.headers);
     try {
         const {refreshToken} = req.cookies;
 
@@ -109,7 +111,7 @@ const signin = async (req, res) => {
 
   const refresh = async (req, res) => {
     try {
-        const { refreshToken } = req.cookies;
+        const {refreshToken} = req.cookies;
         if (!refreshToken) {    
             return res.status(401).json({ error: 'Token is not found' });
         }
@@ -119,11 +121,7 @@ const signin = async (req, res) => {
         if (!userId || !tokenFromDb) {
             return res.status(401).json({ error: 'Unauthorized: Invalid user ID or token not found' });
         }
-
         const user = await User.findById(userId.id);
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-        }
         const userDto = new UserDto(user);
         const tokens = tokenService.generateTokens({ ...userDto });
 
@@ -131,10 +129,7 @@ const signin = async (req, res) => {
 
         const userData = { ...tokens, user: userDto };
 
-        res.cookie('refreshToken', userData.refreshToken, {
-            maxAge: 30 * 24 * 60 * 60 * 1000,
-            httpOnly: true
-        });
+        res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
 
         return res.json(userData);
     } catch (err) {
