@@ -13,12 +13,10 @@ const signup = async (req, res) => {
         if (!emailRegex.test(email)) {
             return res.status(400).json({ error: 'Invalid email address' });
         }
-
         // Перевірка наявності паролю
         if (!password) {
             return res.status(400).json({ error: 'Password is required' });
         }
-
         const existingUser = await User.findOne({ $or: [{ username }, { email }] });
         if (existingUser) {
             return res.status(400).json({ error: 'User with the same username or email already exists' });
@@ -46,7 +44,6 @@ const signup = async (req, res) => {
         
         res.status(201).json({ userData });
     } catch (err) {
-        console.error('Signup error:', err);
         res.status(500).json({ error: 'Server error' });
     }
 };
@@ -102,7 +99,7 @@ const signin = async (req, res) => {
         }
 
         res.clearCookie('refreshToken');
-        return res.status(200).json({ message: 'Token removed successfully' });
+        return res.status(200).json(token)
     } catch (err) {
         console.error('Auth error:', err);
         return res.status(500).json({ error: 'Server error' });
@@ -112,10 +109,11 @@ const signin = async (req, res) => {
   const refresh = async (req, res) => {
     try {
         const {refreshToken} = req.cookies;
+        ///
         if (!refreshToken) {    
             return res.status(401).json({ error: 'Token is not found' });
         }
-        const userId = tokenService.validateRefreshToken(refreshToken);
+        const userId = tokenService.validateRefreshToken(refreshToken);//чому тут id?
         const tokenFromDb = await tokenService.findToken(refreshToken);
 
         if (!userId || !tokenFromDb) {
@@ -128,7 +126,7 @@ const signin = async (req, res) => {
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
         const userData = { ...tokens, user: userDto };
-
+        ////
         res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
 
         return res.json(userData);
