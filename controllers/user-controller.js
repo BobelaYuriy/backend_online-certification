@@ -7,7 +7,7 @@ require("dotenv").config();
 const signup = async (req, res) => {
     try {
         const { username, email, password } = req.body;
-
+        
         // Перевірка наявності коректної email адреси
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -21,7 +21,7 @@ const signup = async (req, res) => {
         if (existingUser) {
             return res.status(400).json({ error: 'User with the same username or email already exists' });
         }
-
+        
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = new User({
@@ -75,7 +75,7 @@ const signin = async (req, res) => {
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
         const userData = {...tokens, user: userDto};
 
-        res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+        res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, overwrite: true });
         res.status(200).json(userData);
     } catch (err) {
         console.error('Auth error:', err);
@@ -127,7 +127,7 @@ const signin = async (req, res) => {
 
         const userData = { ...tokens, user: userDto };
         ////
-        res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+        res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, overwrite: true });
 
         return res.json(userData);
     } catch (err) {
