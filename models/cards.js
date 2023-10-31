@@ -1,9 +1,21 @@
 const mongoose = require('mongoose');
 
+const questionSchema = new mongoose.Schema({
+  text: String, // Текст питання
+  options: [String], // Варіанти відповідей
+  correctAnswer: Number // Індекс правильної відповіді в масиві options
+});
+
+const testSchema = new mongoose.Schema({
+  title: String, // Назва тесту
+  questions: [questionSchema] // Питання та варіанти відповідей
+});
+
 const lessonSchema = new mongoose.Schema({
   title: String,
   duration: String,
-  description: String
+  description: String,
+  tests: [testSchema] // Масив тестів для уроку
 });
 
 const courseSchema = new mongoose.Schema({
@@ -21,4 +33,5 @@ const courseSchema = new mongoose.Schema({
 });
 
 const CardsUsers = mongoose.model('cardsusers', courseSchema);
+
 module.exports = CardsUsers;

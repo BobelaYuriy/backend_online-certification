@@ -54,7 +54,7 @@ const idcourse = async (req, res) => {
 
 const searchcourse = async (req, res) => {
     try {
-        const page = parseInt(req.query.page);
+        const page = parseInt(req.query.page)||1;
         const limit = parseInt(req.query.limit) || 5;
 
         const searchQuery = req.query.query;
