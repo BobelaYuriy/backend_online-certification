@@ -139,7 +139,6 @@ const unenrollUserFromCourse = async (req, res) => {
 module.exports = {
     allcourses,
     idcourse,
-    searchcourse,
     enrollUserInCourse,
     unenrollUserFromCourse
   };
