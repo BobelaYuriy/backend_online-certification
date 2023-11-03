@@ -13,7 +13,8 @@ function verifyToken(req, res, next) {
         if (err) {
             return res.status(401).json({ error: 'Invalid token' });
         }
-
+        req.user = req.user || {};
+        req.user.id = decoded.id;
         req.decodedToken = decoded;
 
         next();

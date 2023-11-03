@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const userCourseSchema = new mongoose.Schema({
   courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'cardsusers' }, // Посилання на курс
+  courseTitle: String,
   progress: Number, // Прогрес користувача на курсі (наприклад, відсоток завершення)
   completedTests: [
     {
