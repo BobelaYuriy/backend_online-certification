@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user')
 const UserDto = require('../dtos/user-dto');
 const tokenService = require('../services/token-service');
+const cloudinary = require('../utils/cloudinary')
 require("dotenv").config();
 
 const signup = async (req, res) => {
@@ -136,9 +137,63 @@ const signin = async (req, res) => {
     }
 };
 
+const updateProfile = async (req, res) => {
+    try {
+      const userId = req.user.id; // Отримуємо ідентифікатор користувача з авторизації
+      const { username, city, age, sex, avatar } = req.body; // Отримуємо дані профілю, які користувач хоче оновити
+  
+      // Створюємо об'єкт, який міститиме тільки ті поля профілю, які користувач хоче оновити
+      const updatedProfile = {};
+  
+      if (username) {
+        updatedProfile.username = username;
+      }
+      if (city) {
+        updatedProfile.city = city;
+      }
+      if (age) {
+        updatedProfile.age = age;
+      }
+      if (sex) {
+        updatedProfile.sex = sex;
+      }
+      if (avatar) {
+        const res = await cloudinary.uploader.upload(avatar,{
+            folder: "avatars",
+          });
+        updatedProfile.avatar = res.url;
+      }
+  
+      // Оновлюємо профіль користувача
+      const updatedUser = await User.findByIdAndUpdate(userId, updatedProfile, { new: true });
+  
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+const getUserById = async (req, res) => {
+    try {
+      const userId = req.user.id; // Отримання ID користувача з параметра запиту
+  
+      // Знаходимо користувача за його ID
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        return res.status(404).json({ message: "Користувача не знайдено" });
+      }
+  
+      res.status(200).json(user); // Відправлення інформації про користувача
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
 module.exports = {
   signup,
   signin,
   signout,
-  refresh
+  refresh,
+  updateProfile,
+  getUserById
 };
