@@ -21,8 +21,8 @@ router.get('/courses/id/:id',verifyToken, idcourse);
 
 router.post('/courses/aboba/test',certificate);
 
-router.post('/courses/enroll/:courseId', verifyToken, enrollUserInCourse);
-router.post('/courses/unenroll/:courseId', verifyToken, unenrollUserFromCourse);
+router.post('/courses/enroll/', verifyToken, enrollUserInCourse);
+router.post('/courses/unenroll/', verifyToken, unenrollUserFromCourse);
 
 router.post('/courses/test/:courseId', verifyToken, submitUserAnswers);
 module.exports = router

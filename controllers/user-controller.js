@@ -173,12 +173,12 @@ const updateProfile = async (req, res) => {
     }
   };
 
-const getUserById = async (req, res) => {
+  const getUserById = async (req, res) => {
     try {
       const userId = req.user.id; // Отримання ID користувача з параметра запиту
   
-      // Знаходимо користувача за його ID
-      const user = await User.findById(userId);
+      // Знаходимо користувача за його ID, використовуючи проекцію для виключення поля "password"
+      const user = await User.findById(userId).select('-password');
   
       if (!user) {
         return res.status(404).json({ message: "Користувача не знайдено" });

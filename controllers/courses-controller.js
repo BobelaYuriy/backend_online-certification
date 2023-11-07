@@ -71,7 +71,7 @@ const idcourse = async (req, res) => {
 const enrollUserInCourse = async (req, res) => {
   try {
     const userId = req.user.id; // Отримуємо ідентифікатор користувача з авторизації
-    const courseId = req.params.courseId; // Отримуємо ідентифікатор курсу з параметра запиту
+    const courseId = req.query.id; // Отримуємо ідентифікатор курсу з параметра запиту
 
     const course = await CardsUsers.findById(courseId);
 
@@ -106,7 +106,7 @@ const enrollUserInCourse = async (req, res) => {
 const unenrollUserFromCourse = async (req, res) => {
     try {
       const userId = req.user.id; // Отримуємо ідентифікатор користувача з авторизації
-      const courseId = req.params.courseId; // Отримуємо ідентифікатор курсу з параметра запиту
+      const courseId = req.query.id; // Отримуємо ідентифікатор курсу з параметра запиту
   
       // Знаходимо користувача в базі даних
       const user = await User.findById(userId);
