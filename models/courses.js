@@ -15,6 +15,7 @@ const lessonSchema = new mongoose.Schema({
   title: String,
   duration: String,
   description: String,
+  material: {type:String, default:null},
   tests: [testSchema], // Масив тестів для уроку
 });
 

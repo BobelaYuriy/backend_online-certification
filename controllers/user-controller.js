@@ -140,22 +140,12 @@ const signin = async (req, res) => {
 const updateProfile = async (req, res) => {
     try {
       const userId = req.user.id; // Отримуємо ідентифікатор користувача з авторизації
-      const { username, city, age, sex, avatar } = req.body; // Отримуємо дані профілю, які користувач хоче оновити
-  
+      const { username, avatar } = req.body; // Отримуємо дані профілю, які користувач хоче оновити
       // Створюємо об'єкт, який міститиме тільки ті поля профілю, які користувач хоче оновити
       const updatedProfile = {};
   
       if (username) {
         updatedProfile.username = username;
-      }
-      if (city) {
-        updatedProfile.city = city;
-      }
-      if (age) {
-        updatedProfile.age = age;
-      }
-      if (sex) {
-        updatedProfile.sex = sex;
       }
       if (avatar) {
         const res = await cloudinary.uploader.upload(avatar,{
@@ -177,8 +167,8 @@ const updateProfile = async (req, res) => {
     try {
       const userId = req.user.id; // Отримання ID користувача з параметра запиту
   
-      // Знаходимо користувача за його ID, використовуючи проекцію для виключення поля "password"
-      const user = await User.findById(userId).select('-password');
+      // Знаходимо користувача за його ID, використовуючи проекцію для виключення полів "_id", "password" та "enrolledCourses.courseId"
+      const user = await User.findById(userId, {password: 0, 'enrolledCourses._id': 0, 'enrolledCourses.courseId': 0 });
   
       if (!user) {
         return res.status(404).json({ message: "Користувача не знайдено" });
