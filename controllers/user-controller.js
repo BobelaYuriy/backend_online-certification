@@ -3,7 +3,7 @@ const User = require('../models/user')
 const UserDto = require('../dtos/user-dto');
 const tokenService = require('../services/token-service');
 const cloudinary = require('../utils/cloudinary')
-require("dotenv").config();
+//require("dotenv").config();
 
 const signup = async (req, res) => {
     try {

@@ -3,7 +3,7 @@ const router = express.Router();
 
 const {signin, signup, signout, refresh, updateProfile, getUserById} = require('../controllers/user-controller')
 
-const {allcourses, idcourse, enrollUserInCourse, unenrollUserFromCourse, updateCourse, getLesson} = require('../controllers/courses-controller')
+const {allcourses, idcourse, enrollUserInCourse, unenrollUserFromCourse, updateCourse, getCourseLessons, getTestQuestions, getLessonInfo} = require('../controllers/courses-controller')
 const {verifyToken} = require('../middleware/token-controller')
 const {submitUserAnswers} = require('../controllers/test-controller')
 const {certificate} = require('../controllers/cetificate-controller')
@@ -27,7 +27,9 @@ router.post('/courses/test/', verifyToken, submitUserAnswers);
 
 router.post('/courses/updatecourse/:courseId', updateCourse)
 
-router.get('/courses/id/:courseId/lesson/:lessonIndex', getLesson)
+router.get('/enrolledcourses/id/:courseId', getCourseLessons)
+router.get('/enrolledcourses/id/:courseId/lesson/:lessonIndex', getLessonInfo)
+router.get('/enrolledcourses/id/:courseId/lesson/:lessonIndex/test/:testIndex/', getTestQuestions)
 
 //certificate
 router.post('/certificate/', certificate)

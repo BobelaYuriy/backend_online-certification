@@ -31,7 +31,7 @@ app.use(cors({
 app.use('/api', routes);
 
 app.use((req, res, next) => {
-  req.db = db; 
+  req.db = db;
   next();
 });
 

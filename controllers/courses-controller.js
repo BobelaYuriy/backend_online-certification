@@ -71,8 +71,14 @@ const idcourse = async (req, res) => {
     const isEnrolled = user.enrolledCourses.some(
       (enrolledCourse) => enrolledCourse.courseId.toString() === req.params.id
     );
+    // Створюємо новий об'єкт, який містить об'єкт course та поле isEnrolled
+    const resultObject = {
+      isEnrolled,
+      ...course.toObject(), // Копіюємо властивості курсу
+    };
 
-    return res.status(200).json({ course, isEnrolled });
+
+    return res.status(200).json(resultObject);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -100,7 +106,6 @@ const enrollUserInCourse = async (req, res) => {
       courseId: courseId,
       progress: 0, // Новий користувач починає курс з прогресом 0%
       completedTests: [], // Поки немає пройдених тестів
-      detailsLink:`http://ec2-54-211-16-251.compute-1.amazonaws.com/api/courses/id/${courseId}`
     };
 
     // Додаємо об'єкт enrollment до масиву enrolledCourses користувача
@@ -168,7 +173,49 @@ const updateCourse = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-const getLesson = async (req, res) => {
+
+const getTestQuestions= async (req, res) => {
+  try {
+    const courseId = req.params.courseId;
+    const lessonIndex = req.params.lessonIndex;
+    const testIndex = req.params.testIndex;
+
+    // Знайти курс за ідентифікатором
+    const course = await CardsUsers.findById(courseId);
+
+    if (!course) {
+      return res.status(404).json({ message: "Курс не знайдено" });
+    }
+
+    // Знайти урок в курсі за індексом
+    const lesson = course.lessons[lessonIndex];
+
+    if (!lesson) {
+      return res.status(404).json({ message: "Урок не знайдено" });
+    }
+
+    // Знайти тест в уроці за індексом
+    const test = lesson.tests[testIndex];
+
+    if (!test) {
+      return res.status(404).json({ message: "Тест не знайдено" });
+    }
+
+    // Повернути тільки питання тесту та варіанти відповідей
+    const questions = test.questions.map((question) => {
+      return {
+        text: question.text,
+        options: question.options,
+      };
+    });
+
+    res.status(200).json({ questions });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getLessonInfo = async (req, res) => {
   try {
     const courseId = req.params.courseId;
     const lessonIndex = req.params.lessonIndex;
@@ -182,17 +229,16 @@ const getLesson = async (req, res) => {
     if (lessonIndex >= 0 && lessonIndex < course.lessons.length) {
       const lesson = course.lessons[lessonIndex];
       const lessonInfo = {
-        material: lesson.material,
+        title: lesson.title,
+        description: lesson.description,
+        duration: lesson.duration,
         tests: lesson.tests.map(test => {
           return {
-            questions: test.questions.map(question => {
-              // Вибираємо лише необхідні властивості з об'єкта питання
-              const { text, options } = question;
-              return { text, options };
-            }),
+            title: test.title,
           };
         }),
       };
+
       res.status(200).json(lessonInfo);
     } else {
       res.status(404).json({ message: "Урок не знайдено" });
@@ -202,6 +248,43 @@ const getLesson = async (req, res) => {
   }
 };
 
+const getCourseLessons = async (req, res) => {
+  try {
+    const courseId = req.params.courseId;
+
+    // Знайти курс за ідентифікатором
+    const course = await CardsUsers.findById(courseId);
+
+    if (!course) {
+      return res.status(404).json({ message: "Курс не знайдено" });
+    }
+
+    // Створити масив для зберігання даних про уроки та тести
+    const lessonsAndTests = course.lessons.map((lesson) => {
+      // Для кожного уроку витягти необхідну інформацію
+      const lessonData = {
+        title: lesson.title,
+        duration: lesson.duration,
+        description: lesson.description,
+        material: lesson.material,
+      };
+
+      // Додати інформацію про тести уроку
+      lessonData.tests = lesson.tests.map((test) => {
+        return {
+          title: test.title,
+          //testId: test._id, // або може вам треба test._id.toString(), залежно від потреб
+        };
+      });
+
+      return lessonData;
+    });
+
+    res.status(200).json(lessonsAndTests);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 module.exports = {
   allcourses,
@@ -209,5 +292,7 @@ module.exports = {
   enrollUserInCourse,
   unenrollUserFromCourse,
   updateCourse,
-  getLesson
+  getCourseLessons,
+  getLessonInfo,
+  getTestQuestions
 };
