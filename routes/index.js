@@ -23,8 +23,8 @@ router.get('/courses/id/:id',verifyToken, idcourse);
 
 router.post('/courses/enroll/', verifyToken, enrollUserInCourse);
 router.post('/courses/unenroll/', verifyToken, unenrollUserFromCourse);
-
-router.post('/courses/test/', verifyToken, submitUserAnswers);
+//тест
+router.post('/profile/courses/:courseId/lesson/:lessonIndex/test/:testIndex', verifyToken, submitUserAnswers);
 
 router.post('/courses/updatecourse/:courseId', updateCourse)
 

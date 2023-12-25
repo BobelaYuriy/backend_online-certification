@@ -4,9 +4,9 @@ const Course = require("../models/courses");
 const submitUserAnswers = async (req, res) => {
   try {
     const userId = req.user.id;
-    const courseId = req.query.id;
-    const lessonIndex = parseInt(req.query.lessonIndex);
-    const testIndex = parseInt(req.query.testIndex);
+    const courseId = req.params.courseId;
+    const lessonIndex = parseInt(req.params.lessonIndex);
+    const testIndex = parseInt(req.params.testIndex);
     const userAnswers = req.body.userAnswers;
 
     const course = await Course.findById(courseId);

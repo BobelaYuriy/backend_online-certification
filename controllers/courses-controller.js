@@ -298,12 +298,25 @@ const getUserLesson = async (req, res) => {
 
 const getCourseLessons = async (req, res) => {
   try {
+    const userId = req.user.id; // Отримуємо ідентифікатор користувача з авторизації
     const courseId = req.params.id;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "Користувач не знайдений" });
+    }
+
+    const courseInfo = user.enrolledCourses.find(course => course.courseId.toString() === courseId);
+
+    if (!courseInfo) {
+      return res.status(404).json({ message: "Курс не знайдений" });
+    }
 
     const course = await CardsUsers.findById(courseId);
 
     if (!course) {
-      return res.status(404).json({ message: "Курс не знайдено" });
+      return res.status(404).json({ message: "Курс не знайдений" });
     }
 
     // Створюємо масив короткої інформації про уроки
@@ -313,27 +326,46 @@ const getCourseLessons = async (req, res) => {
         title: lesson.title,
         duration: lesson.duration,
         description: lesson.description,
+        isCompleted: false, // Додано поле для визначення пройденості уроку
+      };
+
+      // Перевірка, чи користувач пройшов всі тести уроку
+      const completedTests = courseInfo.completedTests.filter(test => test.lessonIndex === index);
+      if (completedTests.length === lesson.tests.length) {
+        lessonData.isCompleted = true;
       }
-      lessonData.tests = lesson.tests.map((test) => {
-        return {
-          title: test.title,
-          //testId: test._id, // або може вам треба test._id.toString(), залежно від потреб
-        };
-      });
 
       return lessonData;
-
     });
 
-    res.status(200).json(lessonsInfo);
+    // Розділяємо уроки на всі та пройдені
+    const allLessons = lessonsInfo;
+    const completedLessons = lessonsInfo
+      .filter(lesson => lesson.isCompleted)
+      .map(lesson => ({
+        lessonIndex: lesson.index,
+        testResults: courseInfo.completedTests
+          .filter(test => test.lessonIndex === lesson.index)
+          .map(test => ({
+            testIndex: test.testIndex,
+            userScore: test.userScore,
+            maxScore: test.maxScore,
+            percentageCorrect: test.percentageCorrect,
+          })),
+      }));
+
+    // Формуємо об'єкт для відповіді
+    const responseObj = {
+      allLessons: allLessons,
+      completedLessons: completedLessons,
+    };
+
+    res.status(200).json(responseObj);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-module.exports = {
-  getCourseLessons,
-};
 
 module.exports = {
   allcourses,
