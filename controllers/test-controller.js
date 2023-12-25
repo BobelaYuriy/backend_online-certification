@@ -41,16 +41,11 @@ const submitUserAnswers = async (req, res) => {
         .json({ message: "Користувач не записаний на цей курс" });
     }
 
-    const testAlreadyCompleted = user.enrolledCourses.some((enrolledCourse) => {
-      return (
-        enrolledCourse.completedTests &&
-        enrolledCourse.completedTests.some(
-          (completedTest) =>
-            completedTest.lessonIndex === lessonIndex &&
-            completedTest.testIndex === testIndex
-        )
-      );
-    });
+    const testAlreadyCompleted = enrolledCourse.completedTests.some(
+      (completedTest) =>
+        completedTest.lessonIndex === lessonIndex &&
+        completedTest.testIndex === testIndex
+    );
 
     if (testAlreadyCompleted) {
       return res
