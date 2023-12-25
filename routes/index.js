@@ -27,9 +27,9 @@ router.post('/courses/test/', verifyToken, submitUserAnswers);
 
 router.post('/courses/updatecourse/:courseId', updateCourse)
 
-router.get('/enrolledcourses/id/:courseId', getCourseLessons)
-router.get('/enrolledcourses/id/:courseId/lesson/:lessonIndex', getLessonInfo)
-router.get('/enrolledcourses/id/:courseId/lesson/:lessonIndex/test/:testIndex/', getTestQuestions)
+router.get('/enrolledcourses/id/:courseId',verifyToken, getCourseLessons)
+router.get('/enrolledcourses/id/:courseId/lesson/:lessonIndex',verifyToken, getLessonInfo)
+router.get('/enrolledcourses/id/:courseId/lesson/:lessonIndex/test/:testIndex/',verifyToken, getTestQuestions)
 
 //certificate
 router.post('/certificate/', certificate)

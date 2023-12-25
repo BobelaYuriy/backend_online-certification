@@ -3,7 +3,6 @@ const User = require('../models/user')
 const UserDto = require('../dtos/user-dto');
 const tokenService = require('../services/token-service');
 const cloudinary = require('../utils/cloudinary')
-//require("dotenv").config();
 
 const signup = async (req, res) => {
     try {
@@ -168,8 +167,8 @@ const updateProfile = async (req, res) => {
       const userId = req.user.id; // Отримання ID користувача з параметра запиту
   
       // Знаходимо користувача за його ID, використовуючи проекцію для виключення полів "_id", "password" та "enrolledCourses.courseId"
-      const user = await User.findById(userId, {password: 0, 'enrolledCourses._id': 0, 'enrolledCourses.courseId': 0 });
-  
+      const user = await User.findById(userId, {password: 0, 'enrolledCourses._id': 0 });
+      
       if (!user) {
         return res.status(404).json({ message: "Користувача не знайдено" });
       }

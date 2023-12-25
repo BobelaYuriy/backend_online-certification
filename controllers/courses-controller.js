@@ -100,11 +100,22 @@ const enrollUserInCourse = async (req, res) => {
         .status(400)
         .json({ message: "Користувач вже записаний на цей курс" });
     }
+    const course = await CardsUsers.findById(courseId);
+
+    if (!course) {
+      return res.status(404).json({ message: "Курс не знайдено" });
+    }
 
     // Створюємо об'єкт userCourseSchema для запису
     const enrollment = {
       courseId: courseId,
+      title: course.title,
+      description: course.description,
+      level: course.level,
+      category: course.category,
+      image: course.image,
       progress: 0, // Новий користувач починає курс з прогресом 0%
+      accuracy:0,
       completedTests: [], // Поки немає пройдених тестів
     };
 
