@@ -3,7 +3,7 @@ const router = express.Router();
 
 const {signin, signup, signout, refresh, updateProfile, getUserById} = require('../controllers/user-controller')
 
-const {allcourses, idcourse, enrollUserInCourse, unenrollUserFromCourse, updateCourse, getCourseLessons, getTestQuestions, getLessonInfo} = require('../controllers/courses-controller')
+const {allcourses, idcourse, enrollUserInCourse, unenrollUserFromCourse, updateCourse, getCourseLessons, getTestQuestions, getLessonInfo, getUserLesson} = require('../controllers/courses-controller')
 const {verifyToken} = require('../middleware/token-controller')
 const {submitUserAnswers} = require('../controllers/test-controller')
 const {certificate} = require('../controllers/cetificate-controller')
@@ -15,6 +15,7 @@ router.post('/signout', signout);
 router.post('/updateprofile',verifyToken, updateProfile);
 router.get('/refresh', refresh);
 router.get('/profile', verifyToken, getUserById);
+router.get('/profile/courses/:courseId/lesson/:lessonIndex',getUserLesson)
 
 //роути для курсі
 router.get('/courses', allcourses);
@@ -27,7 +28,8 @@ router.post('/courses/test/', verifyToken, submitUserAnswers);
 
 router.post('/courses/updatecourse/:courseId', updateCourse)
 
-router.get('/enrolledcourses/id/:courseId',verifyToken, getCourseLessons)
+router.get('/profile/courses/:id/lessons',verifyToken, getCourseLessons)
+
 router.get('/enrolledcourses/id/:courseId/lesson/:lessonIndex',verifyToken, getLessonInfo)
 router.get('/enrolledcourses/id/:courseId/lesson/:lessonIndex/test/:testIndex/',verifyToken, getTestQuestions)
 

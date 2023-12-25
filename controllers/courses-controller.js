@@ -115,7 +115,7 @@ const enrollUserInCourse = async (req, res) => {
       category: course.category,
       image: course.image,
       progress: 0, // Новий користувач починає курс з прогресом 0%
-      accuracy:0,
+      accuracy: 0,
       completedTests: [], // Поки немає пройдених тестів
     };
 
@@ -185,7 +185,7 @@ const updateCourse = async (req, res) => {
   }
 };
 
-const getTestQuestions= async (req, res) => {
+const getTestQuestions = async (req, res) => {
   try {
     const courseId = req.params.courseId;
     const lessonIndex = req.params.lessonIndex;
@@ -259,28 +259,61 @@ const getLessonInfo = async (req, res) => {
   }
 };
 
-const getCourseLessons = async (req, res) => {
+const getUserLesson = async (req, res) => {
   try {
     const courseId = req.params.courseId;
-
-    // Знайти курс за ідентифікатором
+    const lessonIndex = req.params.lessonIndex;
     const course = await CardsUsers.findById(courseId);
 
     if (!course) {
       return res.status(404).json({ message: "Курс не знайдено" });
     }
 
-    // Створити масив для зберігання даних про уроки та тести
-    const lessonsAndTests = course.lessons.map((lesson) => {
-      // Для кожного уроку витягти необхідну інформацію
+    if (lessonIndex >= 0 && lessonIndex < course.lessons.length) {
+      const lesson = course.lessons[lessonIndex];
+
+      // Отримання індексу наступного урока
+      const nextLessonIndex = parseInt(lessonIndex) + 1;
+      const nextLesson = nextLessonIndex < course.lessons.length
+        ? {
+          index: nextLessonIndex,
+          title: course.lessons[nextLessonIndex].title,
+        }
+        : null;
+
+      const lessonInfo = {
+        material: lesson.material,
+        tests: lesson.tests,
+        nextLesson: nextLesson,
+      };
+
+      res.status(200).json(lessonInfo);
+    } else {
+      res.status(404).json({ message: "Урок не знайдено" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getCourseLessons = async (req, res) => {
+  try {
+    const courseId = req.params.id;
+
+    const course = await CardsUsers.findById(courseId);
+
+    if (!course) {
+      return res.status(404).json({ message: "Курс не знайдено" });
+    }
+
+    // Створюємо масив короткої інформації про уроки
+    const lessonsInfo = course.lessons.map((lesson, index) => {
       const lessonData = {
+        index: index,
         title: lesson.title,
         duration: lesson.duration,
         description: lesson.description,
-        material: lesson.material,
-      };
-
-      // Додати інформацію про тести уроку
+      }
       lessonData.tests = lesson.tests.map((test) => {
         return {
           title: test.title,
@@ -289,12 +322,17 @@ const getCourseLessons = async (req, res) => {
       });
 
       return lessonData;
+
     });
 
-    res.status(200).json(lessonsAndTests);
+    res.status(200).json(lessonsInfo);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+};
+
+module.exports = {
+  getCourseLessons,
 };
 
 module.exports = {
@@ -305,5 +343,6 @@ module.exports = {
   updateCourse,
   getCourseLessons,
   getLessonInfo,
-  getTestQuestions
+  getTestQuestions,
+  getUserLesson
 };
