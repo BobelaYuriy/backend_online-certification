@@ -28,7 +28,7 @@ const certificate = async (req, res) => {
     context.drawImage(background, 0, 0, canvas.width, canvas.height);
     
     // Стилі тексту для привітання
-    context.font = "60px 'Dubai Medium', Dubai, serif"; // Зміна розміру та шрифту
+    context.font = "60px sans-serif"; // Зміна розміру та шрифту
     context.fillStyle = "#386058";
     context.textAlign = "center"; // Центрування тексту
     
@@ -37,7 +37,7 @@ const certificate = async (req, res) => {
     context.fillText(welcomeText, canvas.width / 2, 250);
     
     // Стилі для повідомлення про завершення курсу
-    context.font = "50px 'Arial', sans-serif"; // Зміна розміру та шрифту
+    context.font = "50px sans-serif"; // Зміна розміру та шрифту
     context.fillStyle = "#DA3755"; // Зміна кольору тексту
     
     // Виведення повідомлення про завершення курсу
@@ -61,17 +61,11 @@ const certificate = async (req, res) => {
 
     // Зберегти оновлені дані користувача
     await user.save();
-
-    // res
-    //   .status(201)
-    //   .json({
-    //     message: "Сертифікат збережено",
-    //     certificateUrl: uploadRes.url,
-    //   });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 module.exports = {
   certificate,

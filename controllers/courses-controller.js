@@ -184,6 +184,58 @@ const updateCourse = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+const deleteCourse = async (req, res) => {
+  try {
+    const courseId = req.params.courseId;
+
+    // Знаходимо курс за його ідентифікатором
+    const course = await CardsUsers.findById(courseId);
+
+    if (!course) {
+      return res.status(404).json({ message: 'Курс не знайдено' });
+    }
+
+    // Видаляємо курс з бази даних
+    await CardsUsers.deleteOne({ _id: courseId });
+
+    // Також видаляємо цей курс зі всіх користувачів, які на нього записані
+    await User.updateMany(
+      { 'enrolledCourses.courseId': courseId },
+      { $pull: { enrolledCourses: { courseId: courseId } } }
+    );
+
+    res.status(200).json({ message: 'Курс видалено успішно' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const createCourse = async (req, res) => {
+  try {
+    // Отримати дані для створення курсу з запиту
+    const { title, description, instructor, duration, level, category, language, lessons, image } = req.body;
+
+    // Створити новий об'єкт курсу
+    const newCourse = new CardsUsers({
+      title,
+      description,
+      instructor,
+      duration,
+      level,
+      category,
+      language,
+      lessons,
+      image,
+    });
+
+    // Зберегти курс в базі даних
+    const savedCourse = await newCourse.save();
+
+    res.status(201).json({ message: 'Курс створено успішно', course: savedCourse });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 const getTestQuestions = async (req, res) => {
   try {
@@ -366,7 +418,6 @@ const getCourseLessons = async (req, res) => {
   }
 };
 
-
 module.exports = {
   allcourses,
   idcourse,
@@ -376,5 +427,7 @@ module.exports = {
   getCourseLessons,
   getLessonInfo,
   getTestQuestions,
-  getUserLesson
+  getUserLesson,
+  deleteCourse,
+  createCourse
 };
