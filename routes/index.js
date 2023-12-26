@@ -4,7 +4,7 @@ const router = express.Router();
 const {signin, signup, signout, refresh, updateProfile, getUserById} = require('../controllers/user-controller')
 
 const {allcourses, idcourse, enrollUserInCourse, unenrollUserFromCourse, updateCourse, getCourseLessons, getTestQuestions, getLessonInfo, getUserLesson, createCourse, deleteCourse} = require('../controllers/courses-controller')
-const {verifyToken} = require('../middleware/token-controller')
+const {verifyToken, verifyTokenAdmin} = require('../middleware/token-controller')
 const {submitUserAnswers} = require('../controllers/test-controller')
 const {certificate} = require('../controllers/cetificate-controller')
 //роути для юзерів
@@ -32,8 +32,7 @@ router.get('/profile/courses/:id/lessons',verifyToken, getCourseLessons)
 
 router.get('/enrolledcourses/id/:courseId/lesson/:lessonIndex',verifyToken, getLessonInfo)
 router.get('/enrolledcourses/id/:courseId/lesson/:lessonIndex/test/:testIndex/',verifyToken, getTestQuestions)
-//certificate
-router.post('/certificate/userId/:userId/courseId/:courseId', certificate)
-router.delete('/courses/deleteCourse/:courseId', deleteCourse);
-router.post('/courses/createCourse', createCourse);
+
+router.delete('/courses/deleteCourse/:courseId',verifyTokenAdmin, deleteCourse);
+router.post('/courses/createCourse',verifyTokenAdmin, createCourse);
 module.exports = router

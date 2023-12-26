@@ -1,5 +1,5 @@
 const cloudinary = require("../utils/cloudinary");
-const { createCanvas, loadImage } = require("canvas");
+const { createCanvas, loadImage, registerFont } = require("canvas");
 const User = require("../models/user");
 const Course = require("../models/courses");
 const path = require('path');
@@ -26,9 +26,10 @@ const certificate = async (req, res) => {
     const certificatePath = path.join(__dirname, '../utils/certificate.jpg');
     const background = await loadImage(certificatePath);
     context.drawImage(background, 0, 0, canvas.width, canvas.height);
-    
+    const pathToFont = path.join(__dirname, '../utils/times.ttf');
+    const font = await registerFont(pathToFont, { family: 'TIMES' });
     // Стилі тексту для привітання
-    context.font = "60px sans-serif"; // Зміна розміру та шрифту
+    context.font = "60px TIMES"; // Зміна розміру та шрифту
     context.fillStyle = "#386058";
     context.textAlign = "center"; // Центрування тексту
     
@@ -37,7 +38,7 @@ const certificate = async (req, res) => {
     context.fillText(welcomeText, canvas.width / 2, 250);
     
     // Стилі для повідомлення про завершення курсу
-    context.font = "50px sans-serif"; // Зміна розміру та шрифту
+    context.font = "50px TIMES"; // Зміна розміру та шрифту
     context.fillStyle = "#DA3755"; // Зміна кольору тексту
     
     // Виведення повідомлення про завершення курсу
