@@ -1,7 +1,8 @@
 const User = require("../models/user");
 const Course = require("../models/courses");
-
+const {certificate} = require('../controllers/cetificate-controller')
 const submitUserAnswers = async (req, res) => {
+  
   try {
     const userId = req.user.id;
     const courseId = req.params.courseId;
@@ -100,6 +101,10 @@ const submitUserAnswers = async (req, res) => {
 
   await user.save();
 
+  if (enrolledCourse.progress === 100) {
+    // Виклик контролера для видачі сертифіката
+    await certificate(req, res);
+  }
   res.status(200).json({
     message: "Результати тестування збережено",
     completedTest,

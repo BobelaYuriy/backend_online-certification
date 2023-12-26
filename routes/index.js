@@ -34,5 +34,5 @@ router.get('/enrolledcourses/id/:courseId/lesson/:lessonIndex',verifyToken, getL
 router.get('/enrolledcourses/id/:courseId/lesson/:lessonIndex/test/:testIndex/',verifyToken, getTestQuestions)
 
 //certificate
-router.post('/certificate/', certificate)
+router.post('/certificate/userId/:userId/courseId/:courseId', certificate)
 module.exports = router
