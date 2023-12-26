@@ -44,11 +44,13 @@ const certificate = async (req, res) => {
     // Виведення повідомлення про завершення курсу
     const courseCompletionText = "Ви успішно завершили курс:";
     context.fillText(courseCompletionText, canvas.width / 2, 350);
-    
+
     // Виведення назви курсу в центрі сертифікату
     const courseTitleText = course.title;
     context.fillText(courseTitleText, canvas.width / 2, 400);
 
+    const courseTextAccuracy = `Ваша акуратність:${enrolledCourse.accuracy}`;
+    context.fillText(courseTextAccuracy, canvas.width / 2, 450);
     // Отримати сертифікат як base64 строку
     const certificateBase64 = canvas.toDataURL("image/jpeg");
 
