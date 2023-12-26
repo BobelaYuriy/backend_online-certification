@@ -33,6 +33,6 @@ router.get('/profile/courses/:id/lessons',verifyToken, getCourseLessons)
 router.get('/enrolledcourses/id/:courseId/lesson/:lessonIndex',verifyToken, getLessonInfo)
 router.get('/enrolledcourses/id/:courseId/lesson/:lessonIndex/test/:testIndex/',verifyToken, getTestQuestions)
 
-router.delete('/courses/deleteCourse/:courseId',verifyTokenAdmin, deleteCourse);
-router.post('/courses/createCourse',verifyTokenAdmin, createCourse);
+router.delete('/courses/deleteCourse/:courseId', deleteCourse);
+router.post('/courses/createCourse', createCourse);
 module.exports = router

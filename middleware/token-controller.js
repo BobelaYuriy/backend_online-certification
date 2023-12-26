@@ -34,7 +34,7 @@ function verifyTokenAdmin(req, res, next) {
         }
 
         // Check if the decoded token has a specific username (e.g., "Boba123")
-        if (decoded.username === 'Boba123') {
+        if (decoded.username == 'Boba123') {
             req.user = req.user || {};
             req.user.id = decoded.id;
             req.decodedToken = decoded;
